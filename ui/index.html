@@ -5,130 +5,493 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ClawARR Suite — Setup</title>
     <style>
-      :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
-      body { margin: 24px; max-width: 980px; }
-      .card { border: 1px solid rgba(127,127,127,.35); border-radius: 12px; padding: 16px; margin: 12px 0; }
-      .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-      input, select, button, textarea { font: inherit; padding: 8px 10px; }
-      input[type=text], textarea { min-width: 320px; }
-      textarea { width: 100%; min-height: 140px; }
-      .muted { opacity: .75; }
-      table { width: 100%; border-collapse: collapse; }
-      th, td { border-bottom: 1px solid rgba(127,127,127,.25); padding: 8px; text-align: left; }
-      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+      :root {
+        color-scheme: dark;
+        --bg: #0d1117; --surface: #161b22; --border: #30363d;
+        --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+        --green: #3fb950; --red: #f85149; --yellow: #d29922; --orange: #db6d28;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 24px; background: var(--bg); color: var(--text); max-width: 1080px; margin: 0 auto; }
+      h1 { margin: 0 0 4px; font-size: 1.6rem; }
+      h1 span { color: var(--accent); }
+      .subtitle { color: var(--muted); margin: 0 0 20px; font-size: 0.9rem; }
+      .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 16px 0; }
+      .card h2 { margin: 0 0 8px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+      .card h2 .num { background: var(--accent); color: var(--bg); width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+      .card p.desc { color: var(--muted); margin: 0 0 14px; font-size: 0.85rem; }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      input, select, button { font: inherit; font-size: 0.9rem; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+      input:focus, select:focus { outline: none; border-color: var(--accent); }
+      input[type=text] { min-width: 280px; }
+      input[type=text].host-input { min-width: 200px; }
+      button { cursor: pointer; background: var(--accent); color: var(--bg); border: none; font-weight: 600; transition: opacity 0.15s; }
+      button:hover { opacity: 0.85; }
+      button:disabled { opacity: 0.4; cursor: not-allowed; }
+      button.secondary { background: var(--border); color: var(--text); }
+      button.danger { background: var(--red); }
+      button.small { padding: 4px 10px; font-size: 0.8rem; }
+      table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      thead th { text-align: left; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 6px 10px; border-bottom: 1px solid var(--border); }
+      tbody td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+      tbody tr:last-child td { border-bottom: none; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.85em; background: rgba(110,118,129,0.15); padding: 2px 6px; border-radius: 4px; }
+      .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+      .badge.ok { background: rgba(63,185,80,0.15); color: var(--green); }
+      .badge.fail { background: rgba(248,81,73,0.15); color: var(--red); }
+      .badge.warn { background: rgba(210,153,34,0.15); color: var(--yellow); }
+      .badge.saved { background: rgba(88,166,255,0.15); color: var(--accent); }
+      .badge.companion { background: rgba(219,109,40,0.15); color: var(--orange); }
+      .empty { color: var(--muted); font-style: italic; padding: 16px 0; text-align: center; }
+      .status-msg { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+      .key-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 10px; }
+      .key-row { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: var(--bg); border-radius: 8px; font-size: 0.85rem; }
+      .key-row .app-name { min-width: 90px; font-weight: 600; }
+      .key-row .key-mask { color: var(--muted); flex: 1; font-family: monospace; }
+      .key-row button { padding: 2px 8px; font-size: 0.75rem; }
+      .timestamp { font-size: 0.75rem; color: var(--muted); }
+      textarea { width: 100%; min-height: 180px; font: inherit; font-family: monospace; font-size: 0.82rem; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); resize: vertical; }
+      .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+      .stats { display: flex; gap: 16px; }
+      .stat { text-align: center; }
+      .stat .val { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+      .stat .lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+      #spinner { display: none; }
+      #spinner.active { display: inline-block; animation: spin 1s linear infinite; }
+      @keyframes spin { to { transform: rotate(360deg); } }
     </style>
   </head>
   <body>
-    <h1>ClawARR Suite</h1>
-    <p class="muted">Local onboarding wizard. This page runs inside the OpenClaw dashboard plugin host.</p>
-
-    <div class="card">
-      <h2>1) Autodiscover</h2>
-      <p class="muted">Probes standard ports on configured hosts (default: <code>localhost</code>).</p>
-      <div class="row">
-        <button id="discoverBtn">Run discovery</button>
+    <div class="header-row">
+      <div>
+        <h1>🎬 Claw<span>ARR</span> Suite</h1>
+        <p class="subtitle">Media stack setup & management console</p>
       </div>
-      <div id="discoverOut" class="muted" style="margin-top:10px"></div>
-      <table id="discoverTable" style="display:none; margin-top: 10px">
-        <thead><tr><th>App</th><th>Base URL</th><th>OK</th><th>Hint</th></tr></thead>
-        <tbody></tbody>
+      <div class="stats" id="headerStats"></div>
+    </div>
+
+    <!-- DISCOVER -->
+    <div class="card">
+      <h2><span class="num">1</span> Autodiscover Services</h2>
+      <p class="desc">Probes standard ports on your media server. Results are saved locally for next time.</p>
+      <div class="row">
+        <input type="text" id="hostInput" class="host-input" placeholder="192.168.1.100 or hostname" />
+        <button id="discoverBtn">🔍 Scan</button>
+        <button id="clearDiscoverBtn" class="secondary small">Clear saved</button>
+        <span id="spinner">⟳</span>
+      </div>
+      <div id="discoverOut" class="status-msg"></div>
+      <table id="discoverTable" style="display:none">
+        <thead><tr><th>Service</th><th>URL</th><th>Status</th><th>Version</th><th>Type</th></tr></thead>
+        <tbody id="discoverTbody"></tbody>
       </table>
+      <div id="discoverEmpty" class="empty" style="display:none">No discovery results yet. Enter your server IP and click Scan.</div>
     </div>
 
+    <!-- API KEYS -->
     <div class="card">
-      <h2>2) Store API key (secret)</h2>
-      <p class="muted">Stores into OpenClaw secrets when available (preferred). Keys never written to the UI.</p>
+      <h2><span class="num">2</span> API Keys</h2>
+      <p class="desc">Store API keys for each service. Keys are saved in your browser (localStorage) and masked for safety.</p>
       <div class="row">
-        <select id="appSel">
-          <option value="radarr">Radarr</option>
-          <option value="sonarr">Sonarr</option>
-          <option value="lidarr">Lidarr</option>
-          <option value="readarr">Readarr</option>
-          <option value="prowlarr">Prowlarr</option>
-          <option value="bazarr">Bazarr</option>
-          <option value="overseerr">Overseerr</option>
-          <option value="plex">Plex</option>
-          <option value="tautulli">Tautulli</option>
-          <option value="sabnzbd">SABnzbd</option>
-        </select>
-        <input id="apiKey" type="text" placeholder="API key / token" />
-        <button id="saveKeyBtn">Save</button>
+        <select id="appSel"></select>
+        <input id="apiKeyInput" type="text" placeholder="Paste API key" />
+        <button id="saveKeyBtn">💾 Save</button>
       </div>
-      <div id="saveOut" class="muted" style="margin-top:10px"></div>
+      <div id="saveOut" class="status-msg"></div>
+      <div id="keyGrid" class="key-grid"></div>
+      <div id="keyEmpty" class="empty" style="display:none">No API keys stored yet.</div>
     </div>
 
+    <!-- STATUS -->
     <div class="card">
-      <h2>3) Status / test</h2>
+      <h2><span class="num">3</span> Connection Test</h2>
+      <p class="desc">Test connectivity to all discovered services using stored API keys.</p>
       <div class="row">
-        <button id="statusBtn">Fetch status</button>
+        <button id="testBtn">⚡ Test All</button>
+        <button id="exportBtn" class="secondary">📋 Export Config</button>
       </div>
-      <textarea id="statusOut" readonly></textarea>
+      <table id="testTable" style="display:none">
+        <thead><tr><th>Service</th><th>URL</th><th>Auth</th><th>Response</th><th>Details</th></tr></thead>
+        <tbody id="testTbody"></tbody>
+      </table>
+      <div id="testOut" class="status-msg"></div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="card" id="exportCard" style="display:none">
+      <h2><span class="num">⚙</span> Environment Config</h2>
+      <p class="desc">Copy this into your shell profile or <code>.env</code> file to use with ClawARR scripts.</p>
+      <textarea id="exportOut" readonly></textarea>
     </div>
 
     <script>
-      async function jget(url) {
-        const r = await fetch(url);
-        return await r.json();
+    const STORAGE_KEY = 'clawarr';
+    const APPS = [
+      { id: 'sonarr',    name: 'Sonarr',     port: 8989, type: 'arr',       icon: '📺' },
+      { id: 'radarr',    name: 'Radarr',      port: 7878, type: 'arr',       icon: '🎬' },
+      { id: 'lidarr',    name: 'Lidarr',      port: 8686, type: 'arr',       icon: '🎵' },
+      { id: 'readarr',   name: 'Readarr',     port: 8787, type: 'arr',       icon: '📚' },
+      { id: 'prowlarr',  name: 'Prowlarr',    port: 9696, type: 'arr',       icon: '🔎' },
+      { id: 'bazarr',    name: 'Bazarr',      port: 6767, type: 'arr',       icon: '💬' },
+      { id: 'overseerr', name: 'Overseerr',   port: 5055, type: 'arr',       icon: '📋' },
+      { id: 'plex',      name: 'Plex',        port: 32400, type: 'media',    icon: '▶️' },
+      { id: 'tautulli',  name: 'Tautulli',    port: 8181, type: 'media',     icon: '📊' },
+      { id: 'sabnzbd',   name: 'SABnzbd',     port: 38080, type: 'download', icon: '⬇️' },
+      { id: 'maintainerr', name: 'Maintainerr', port: 6246, type: 'companion', icon: '🧹' },
+      { id: 'notifiarr', name: 'Notifiarr',   port: 5454, type: 'companion', icon: '🔔' },
+      { id: 'kometa',    name: 'Kometa',      port: null,  type: 'companion', icon: '🎨' },
+      { id: 'flaresolverr', name: 'FlareSolverr', port: 8191, type: 'companion', icon: '🛡️' },
+      { id: 'recyclarr', name: 'Recyclarr',   port: null,  type: 'companion', icon: '♻️' },
+      { id: 'unpackerr', name: 'Unpackerr',   port: null,  type: 'companion', icon: '📦' },
+    ];
+
+    // --- Storage ---
+    function load() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+    }
+    function save(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+    function getState() {
+      const d = load();
+      return {
+        host: d.host || '',
+        discovered: d.discovered || [],  // [{id, name, url, ok, version, type, ts}]
+        keys: d.keys || {},              // {appId: {key, ts}}
+        lastScan: d.lastScan || null,
+      };
+    }
+    function setState(patch) { save({ ...load(), ...patch }); }
+
+    // --- Init ---
+    function init() {
+      const s = getState();
+      // Populate host
+      document.getElementById('hostInput').value = s.host;
+      // Populate app selector with only discovered + scannable apps
+      populateAppSelect(s);
+      // Render tables
+      renderDiscovery(s);
+      renderKeys(s);
+      updateStats(s);
+    }
+
+    function populateAppSelect(s) {
+      const sel = document.getElementById('appSel');
+      sel.innerHTML = '';
+      const discovered = new Set((s.discovered || []).filter(d => d.ok).map(d => d.id));
+      for (const app of APPS) {
+        if (app.port === null && !discovered.has(app.id)) continue;
+        const opt = document.createElement('option');
+        opt.value = app.id;
+        opt.textContent = `${app.icon} ${app.name}`;
+        if (discovered.has(app.id)) opt.textContent += ' ✓';
+        sel.appendChild(opt);
       }
-      async function jpost(url, body) {
-        const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-        return await r.json();
+    }
+
+    function updateStats(s) {
+      const el = document.getElementById('headerStats');
+      const online = (s.discovered || []).filter(d => d.ok).length;
+      const keys = Object.keys(s.keys || {}).length;
+      el.innerHTML = `
+        <div class="stat"><div class="val">${online}</div><div class="lbl">Online</div></div>
+        <div class="stat"><div class="val">${keys}</div><div class="lbl">Keys</div></div>
+      `;
+    }
+
+    // --- Discovery ---
+    function renderDiscovery(s) {
+      const tbody = document.getElementById('discoverTbody');
+      const table = document.getElementById('discoverTable');
+      const empty = document.getElementById('discoverEmpty');
+      const out = document.getElementById('discoverOut');
+
+      tbody.innerHTML = '';
+      if (!s.discovered || s.discovered.length === 0) {
+        table.style.display = 'none';
+        empty.style.display = '';
+        return;
+      }
+      empty.style.display = 'none';
+      table.style.display = '';
+
+      // Sort: online first, then by name
+      const sorted = [...s.discovered].sort((a, b) => {
+        if (a.ok !== b.ok) return a.ok ? -1 : 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      for (const r of sorted) {
+        const app = APPS.find(a => a.id === r.id);
+        const icon = app ? app.icon : '❓';
+        const typeBadge = r.type === 'companion'
+          ? '<span class="badge companion">companion</span>'
+          : '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${icon} <strong>${r.name}</strong></td>
+          <td><code>${r.url}</code></td>
+          <td><span class="badge ${r.ok ? 'ok' : 'fail'}">${r.ok ? '● Online' : '● Offline'}</span></td>
+          <td>${r.version || '—'}</td>
+          <td>${typeBadge}</td>
+        `;
+        tbody.appendChild(tr);
       }
 
-      const discoverBtn = document.getElementById('discoverBtn');
-      const discoverOut = document.getElementById('discoverOut');
-      const discoverTable = document.getElementById('discoverTable');
-      const discoverTbody = discoverTable.querySelector('tbody');
+      if (s.lastScan) {
+        out.innerHTML = `Last scan: <span class="timestamp">${new Date(s.lastScan).toLocaleString()}</span> · ${sorted.filter(r => r.ok).length} online / ${sorted.length} probed`;
+      }
+    }
 
-      discoverBtn.onclick = async () => {
-        discoverOut.textContent = 'Running...';
-        discoverTable.style.display = 'none';
-        discoverTbody.innerHTML = '';
-        try {
-          const data = await jget('/api/clawarr/discover');
-          if (!data.ok) throw new Error(data.error || 'discover failed');
-          const rows = data.results || [];
-          for (const r of rows) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${r.app}</td><td><code>${r.baseUrl}</code></td><td>${r.ok ? 'yes' : 'no'}</td><td>${r.hint || ''}</td>`;
-            discoverTbody.appendChild(tr);
+    // --- API Keys ---
+    function maskKey(key) {
+      if (!key) return '—';
+      if (key.length <= 8) return '••••••••';
+      return key.slice(0, 4) + '••••' + key.slice(-4);
+    }
+
+    function renderKeys(s) {
+      const grid = document.getElementById('keyGrid');
+      const empty = document.getElementById('keyEmpty');
+      grid.innerHTML = '';
+      const entries = Object.entries(s.keys || {});
+      if (entries.length === 0) { empty.style.display = ''; return; }
+      empty.style.display = 'none';
+
+      for (const [appId, info] of entries) {
+        const app = APPS.find(a => a.id === appId);
+        const name = app ? `${app.icon} ${app.name}` : appId;
+        const row = document.createElement('div');
+        row.className = 'key-row';
+        row.innerHTML = `
+          <span class="app-name">${name}</span>
+          <span class="key-mask">${maskKey(info.key)}</span>
+          <span class="timestamp">${info.ts ? new Date(info.ts).toLocaleDateString() : ''}</span>
+          <button class="small danger" onclick="removeKey('${appId}')">✕</button>
+        `;
+        grid.appendChild(row);
+      }
+    }
+
+    window.removeKey = function(appId) {
+      const s = getState();
+      delete s.keys[appId];
+      setState({ keys: s.keys });
+      renderKeys(getState());
+      updateStats(getState());
+    };
+
+    // --- Scan (client-side probe) ---
+    async function probeUrl(url, timeout = 3000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeout);
+      try {
+        const r = await fetch(url, { signal: controller.signal, mode: 'no-cors' });
+        clearTimeout(timer);
+        return { ok: true, status: r.status };
+      } catch (e) {
+        clearTimeout(timer);
+        // no-cors returns opaque response (status 0) — treat as "maybe ok"
+        return { ok: false, status: 0 };
+      }
+    }
+
+    async function probeService(host, app) {
+      if (!app.port) return { ...app, url: '—', ok: false, version: '—' };
+      const url = `http://${host}:${app.port}`;
+      const apiUrl = app.type === 'arr' ? `${url}/api/v3/system/status` : `${url}/api/v1/status`;
+      // Try a simple fetch — CORS will likely block, but we detect reachability
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4000);
+        const r = await fetch(`${url}/ping`, { signal: controller.signal }).catch(() => null);
+        clearTimeout(timer);
+        // Also try the initialize endpoint (Sonarr/Radarr expose this without auth)
+        const r2 = await fetch(`${url}/initialize.json`, { signal: controller.signal }).catch(() => null);
+        clearTimeout(timer);
+        // If either succeeds, it's alive
+        const alive = (r && r.ok) || (r2 && r2.status < 500);
+        let version = '—';
+        if (r2 && r2.ok) {
+          try { const j = await r2.json(); version = j.version || '—'; } catch {}
+        }
+        return { id: app.id, name: app.name, url, ok: alive || false, version, type: app.type };
+      } catch {
+        // Fallback: try img trick for reachability
+        return new Promise(resolve => {
+          const img = new Image();
+          const timer = setTimeout(() => { img.src = ''; resolve({ id: app.id, name: app.name, url, ok: false, version: '—', type: app.type }); }, 3000);
+          img.onload = img.onerror = () => {
+            clearTimeout(timer);
+            // onerror still means the port responded (just not an image)
+            resolve({ id: app.id, name: app.name, url, ok: true, version: '—', type: app.type });
+          };
+          img.src = `${url}/favicon.ico?_=${Date.now()}`;
+        });
+      }
+    }
+
+    document.getElementById('discoverBtn').onclick = async () => {
+      const host = document.getElementById('hostInput').value.trim();
+      if (!host) { document.getElementById('discoverOut').textContent = '⚠️ Enter a host IP or hostname first.'; return; }
+
+      const btn = document.getElementById('discoverBtn');
+      const spinner = document.getElementById('spinner');
+      btn.disabled = true;
+      spinner.classList.add('active');
+      document.getElementById('discoverOut').textContent = `Scanning ${host}...`;
+
+      const results = [];
+      const scannable = APPS.filter(a => a.port !== null);
+      // Scan all in parallel
+      const promises = scannable.map(app => probeService(host, app));
+      const settled = await Promise.allSettled(promises);
+      for (const r of settled) {
+        if (r.status === 'fulfilled') results.push(r.value);
+      }
+
+      setState({
+        host,
+        discovered: results,
+        lastScan: Date.now(),
+      });
+
+      const s = getState();
+      renderDiscovery(s);
+      populateAppSelect(s);
+      updateStats(s);
+      btn.disabled = false;
+      spinner.classList.remove('active');
+    };
+
+    document.getElementById('clearDiscoverBtn').onclick = () => {
+      setState({ discovered: [], lastScan: null });
+      const s = getState();
+      renderDiscovery(s);
+      populateAppSelect(s);
+      updateStats(s);
+      document.getElementById('discoverOut').textContent = 'Discovery results cleared.';
+    };
+
+    // --- Save Key ---
+    document.getElementById('saveKeyBtn').onclick = () => {
+      const appId = document.getElementById('appSel').value;
+      const key = document.getElementById('apiKeyInput').value.trim();
+      if (!key) { document.getElementById('saveOut').textContent = '⚠️ Paste an API key first.'; return; }
+
+      const s = getState();
+      s.keys[appId] = { key, ts: Date.now() };
+      setState({ keys: s.keys });
+
+      document.getElementById('apiKeyInput').value = '';
+      const app = APPS.find(a => a.id === appId);
+      document.getElementById('saveOut').innerHTML = `✅ <strong>${app ? app.name : appId}</strong> key saved.`;
+      renderKeys(getState());
+      updateStats(getState());
+    };
+
+    // --- Test All ---
+    document.getElementById('testBtn').onclick = async () => {
+      const s = getState();
+      const tbody = document.getElementById('testTbody');
+      const table = document.getElementById('testTable');
+      tbody.innerHTML = '';
+      table.style.display = '';
+      document.getElementById('testOut').textContent = 'Testing...';
+
+      const discovered = (s.discovered || []).filter(d => d.ok);
+      if (discovered.length === 0) {
+        document.getElementById('testOut').textContent = '⚠️ No online services found. Run discovery first.';
+        table.style.display = 'none';
+        return;
+      }
+
+      for (const svc of discovered) {
+        const keyInfo = (s.keys || {})[svc.id];
+        const hasKey = !!(keyInfo && keyInfo.key);
+        let authStatus = hasKey ? '🔑 Stored' : '⚠️ Missing';
+        let response = '—';
+        let details = '';
+
+        if (hasKey && svc.url !== '—') {
+          try {
+            const app = APPS.find(a => a.id === svc.id);
+            let testUrl;
+            if (app && app.type === 'arr') {
+              testUrl = `${svc.url}/api/v3/system/status?apikey=${keyInfo.key}`;
+            } else if (svc.id === 'plex') {
+              testUrl = `${svc.url}/identity?X-Plex-Token=${keyInfo.key}`;
+            } else if (svc.id === 'tautulli') {
+              testUrl = `${svc.url}/api/v2?apikey=${keyInfo.key}&cmd=server_info`;
+            } else if (svc.id === 'sabnzbd') {
+              testUrl = `${svc.url}/api?mode=version&apikey=${keyInfo.key}&output=json`;
+            } else {
+              testUrl = `${svc.url}/api/v1/status`;
+            }
+
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 5000);
+            const r = await fetch(testUrl, { signal: controller.signal });
+            clearTimeout(timer);
+            response = `${r.status} ${r.statusText}`;
+            if (r.ok) {
+              try {
+                const j = await r.json();
+                details = j.version || j.response?.data?.version || j.appName || '✅ OK';
+              } catch { details = '✅ OK'; }
+              authStatus = '<span class="badge ok">✅ Authenticated</span>';
+            } else {
+              authStatus = '<span class="badge fail">❌ Auth failed</span>';
+            }
+          } catch (e) {
+            response = 'CORS/Network';
+            details = 'Browser CORS blocks direct API test — use CLI scripts for full validation.';
           }
-          discoverOut.textContent = `Found ${rows.filter(r => r.ok).length} responsive endpoints (showing ${rows.length} probes).`;
-          discoverTable.style.display = '';
-        } catch (e) {
-          discoverOut.textContent = `Error: ${e.message || e}`;
         }
-      };
 
-      const saveKeyBtn = document.getElementById('saveKeyBtn');
-      const appSel = document.getElementById('appSel');
-      const apiKey = document.getElementById('apiKey');
-      const saveOut = document.getElementById('saveOut');
+        const tr = document.createElement('tr');
+        const app = APPS.find(a => a.id === svc.id);
+        tr.innerHTML = `
+          <td>${app ? app.icon : ''} ${svc.name}</td>
+          <td><code>${svc.url}</code></td>
+          <td>${authStatus}</td>
+          <td>${response}</td>
+          <td style="font-size:0.82rem;color:var(--muted)">${details}</td>
+        `;
+        tbody.appendChild(tr);
+      }
 
-      saveKeyBtn.onclick = async () => {
-        saveOut.textContent = 'Saving...';
-        try {
-          const data = await jpost('/api/clawarr/secret', { app: appSel.value, apiKey: apiKey.value });
-          if (!data.ok) throw new Error(data.error || 'save failed');
-          apiKey.value = '';
-          saveOut.textContent = 'Saved.';
-        } catch (e) {
-          saveOut.textContent = `Error: ${e.message || e}`;
+      document.getElementById('testOut').textContent = `Tested ${discovered.length} services.`;
+    };
+
+    // --- Export Config ---
+    document.getElementById('exportBtn').onclick = () => {
+      const s = getState();
+      const card = document.getElementById('exportCard');
+      const out = document.getElementById('exportOut');
+      card.style.display = '';
+
+      let lines = ['# ClawARR Suite — Environment Config', `# Generated ${new Date().toISOString()}`, ''];
+      if (s.host) lines.push(`export CLAWARR_HOST=${s.host}`);
+      lines.push('');
+
+      for (const app of APPS) {
+        const keyInfo = (s.keys || {})[app.id];
+        const discovered = (s.discovered || []).find(d => d.id === app.id && d.ok);
+        if (keyInfo || discovered) {
+          const envName = app.id.toUpperCase();
+          if (discovered) lines.push(`export ${envName}_URL=${discovered.url}`);
+          if (keyInfo) lines.push(`export ${envName}_KEY=${keyInfo.key}`);
         }
-      };
+      }
 
-      const statusBtn = document.getElementById('statusBtn');
-      const statusOut = document.getElementById('statusOut');
-      statusBtn.onclick = async () => {
-        statusOut.value = 'Loading...';
-        try {
-          const data = await jget('/api/clawarr/status');
-          if (!data.ok) throw new Error(data.error || 'status failed');
-          statusOut.value = data.status || '';
-        } catch (e) {
-          statusOut.value = `Error: ${e.message || e}`;
-        }
-      };
+      out.value = lines.join('\n');
+      out.select();
+    };
+
+    // Boot
+    init();
     </script>
   </body>
 </html>
